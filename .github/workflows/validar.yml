@@ -1,0 +1,32 @@
+name: Validar
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Scripts Python compilam
+        run: python3 -m py_compile skills/estimar-tokens/scripts/*.py hooks/*.py
+      - name: Hook desligado não imprime nada
+        run: test -z "$(HOME=$(mktemp -d) python3 hooks/lembrete.py)"
+      - name: Status line grava o saldo
+        run: |
+          export HOME=$(mktemp -d)
+          echo '{"context_window":{"total_input_tokens":1000,"used_percentage":1},"rate_limits":{"five_hour":{"used_percentage":10,"resets_at":2000000000}}}' \
+            | python3 skills/estimar-tokens/scripts/statusline.py | grep -q '5h 10%'
+          python3 skills/estimar-tokens/scripts/saldo.py
+      - name: Manifesto do plugin
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin validate .

@@ -1,0 +1,16 @@
+{
+  "description": "Lembrete opcional de estimar tokens a cada pedido. Desligado até existir ~/.claude/estimar-tokens/lembrete.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/lembrete.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
