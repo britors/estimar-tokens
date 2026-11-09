@@ -3,6 +3,9 @@
   "owner": {
     "name": "Rodrigo Brito"
   },
+  "metadata": {
+    "description": "Plugin que estima o custo em tokens antes de cada etapa no Claude Code."
+  },
   "plugins": [
     {
       "name": "estimar-tokens",
