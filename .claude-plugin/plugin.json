@@ -1,0 +1,14 @@
+{
+  "name": "estimar-tokens",
+  "displayName": "Estimar tokens",
+  "version": "1.0.0",
+  "description": "Estima o custo em tokens de cada etapa antes de executá-la, para a sessão não parar no meio por limite de uso.",
+  "author": {
+    "name": "Rodrigo Brito"
+  },
+  "homepage": "https://github.com/britors/estimar-tokens",
+  "repository": "https://github.com/britors/estimar-tokens",
+  "license": "GPL-3.0-only",
+  "keywords": ["tokens", "custo", "limite-de-uso", "planejamento"],
+  "icon": "./.claude-plugin/icon.png"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "estimar-tokens",
+  "owner": {
+    "name": "Rodrigo Brito"
+  },
+  "plugins": [
+    {
+      "name": "estimar-tokens",
+      "source": "./",
+      "description": "Estima o custo em tokens de cada etapa antes de executá-la, para a sessão não parar no meio por limite de uso."
+    }
+  ]
+}
