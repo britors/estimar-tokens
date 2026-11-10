@@ -3,6 +3,7 @@
 ## 1.3.0 — 10/11/2026
 
 - Status line: os percentuais de 5 h, 7 dias e contexto aparecem como barras (`5h ███▍░░░░ 42%`).
+- Status line: segunda linha com os tokens e o custo em US$ da sessão, com os subagentes. A leitura do registro é incremental, com cache em `~/.claude/estimar-tokens/sessoes/`.
 
 ## 1.2.0 — 10/11/2026
 

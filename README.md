@@ -76,7 +76,14 @@ Para manter a status line que você já usa, passe o comando dela em `--encadear
 "command": "python3 .../statusline.py --encadear 'bash ~/.claude/minha-statusline.sh'"
 ```
 
-A barra mostra algo como `minha linha | 5h ███▍░░░░ 42% · 7d █████▋░░ 71% · ctx █░░░░░░░ 13%`, e o retrato vai para `~/.claude/estimar-tokens/saldo.json`.
+A barra mostra algo como:
+
+```
+minha linha | 5h ███▍░░░░ 42% · 7d █████▋░░ 71% · ctx █░░░░░░░ 13%
+sessão 1,2 mi tokens (63,5 mil novos) · US$ 0,88
+```
+
+A segunda linha soma a sessão inteira, com os subagentes, a partir do registro da sessão. O retrato do saldo vai para `~/.claude/estimar-tokens/saldo.json`.
 
 Os limites só aparecem para assinantes do Claude.ai, ou atrás de um gateway com limite de gasto. Pela API sem gateway, a status line mostra só o contexto.
 
@@ -172,7 +179,7 @@ Requer Python 3.8 ou mais novo, só com a biblioteca padrão.
 
 [Claude Code](https://claude.com/claude-code) plugin that estimates how many tokens — and how many dollars — each step of a task will use and checks it against your **real usage limits**, **before** running it, so a session doesn't stop halfway because of a usage limit.
 
-- **Real balance:** the bundled status line script (`scripts/statusline.py`) shows and records the 5-hour and 7-day limit usage and context size that Claude Code sends to the status line. Use `--encadear '<cmd>'` to keep your current status line.
+- **Real balance:** the bundled status line script (`scripts/statusline.py`) shows the 5-hour and 7-day limit usage and the context size as bars, and records them. A second line shows the session's tokens and US$ cost, subagents included. Use `--encadear '<cmd>'` to keep your current status line.
 - **Measured costs:** `scripts/calibrar.py --salvar` measures per-tool cost from your own `~/.claude/projects` transcripts. Everything stays local.
 - **Safe steps:** work is split into steps that end in a consistent state. Expensive steps need confirmation, and steps that don't fit the remaining quota aren't started.
 - **Cost in USD and Markdown export:** `scripts/estimar.py` (estimate per step) and `scripts/custo_real.py` (real cost of a session, including subagents) print tables in tokens and USD; `--md file.md` saves them.
