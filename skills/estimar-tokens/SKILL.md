@@ -38,10 +38,17 @@ custo ≈ chamadas × contexto atual  +  soma do que cada chamada acrescenta
 - **Contexto atual:** vem do `saldo.py`, ou estime pelo tamanho da conversa. Ele é relido a cada resposta, a maior parte do cache, e domina o custo em conversa longa.
 - **O que cada chamada acrescenta:** vem da tabela de custos.
 - **Subagente:** conte o total da conversa dele, que é bem maior que o relatório que ele devolve.
+- **Cache frio:** depois de uma pausa maior que o TTL do cache (1 hora no Claude Code), a primeira chamada regrava o contexto inteiro a 2× o preço de entrada. Some esse custo à primeira etapa.
+
+Para tarefas com mais de uma etapa, calcule com o script, que já converte em US$:
+
+```
+python3 <pasta desta skill>/scripts/estimar.py --etapa "descrição|chamadas|novos em mil" [--etapa ...]
+```
 
 ## 4. Avisar e decidir
 
-Antes de executar, diga numa linha: `Próxima etapa: <o quê>. Estimativa: ~N mil tokens.`
+Antes de executar, diga numa linha: `Próxima etapa: <o quê>. Estimativa: ~N mil tokens (~US$ X).`
 
 | Situação | O que fazer |
 | --- | --- |
@@ -64,8 +71,24 @@ Durante a execução, se a etapa passar de 1,5× o estimado, pare num ponto cons
 - Não repita pesquisa já feita na conversa ou na memória.
 - Em conversa muito longa, prefira terminar a etapa e sugerir compactar ou recomeçar.
 
+## 6. Exportar em Markdown
+
+Quando o usuário pedir a estimativa ou o custo num arquivo, ou ao fechar uma tarefa grande:
+
+- **Estimativa:** `scripts/estimar.py ... --titulo "<tarefa>" --md <arquivo>.md`.
+- **Custo real:** `scripts/custo_real.py --md <arquivo>.md`. Opções:
+  - `--ultimos-min N` ou `--desde "AAAA-MM-DD HH:MM"`: só o período da tarefa;
+  - `--sessao <id>`: outra sessão.
+  Inclui os subagentes da sessão.
+- Para comparar o estimado com o real, rode os dois com o mesmo título e o mesmo período e mostre a diferença.
+
+Os valores em US$ seguem o preço da API (`references/precos.json`). Para assinantes do Claude.ai, são o equivalente em API, não uma cobrança: diga isso ao mostrar valores.
+
 ## Recursos
 
+- `scripts/estimar.py`: etapas → tokens e US$ (`--md` exporta).
+- `scripts/custo_real.py`: custo real de uma sessão, com subagentes (`--md` exporta).
+- `references/precos.json`: preços por modelo; sobrescreva em `~/.claude/estimar-tokens/precos.json`.
 - `scripts/saldo.py`: último saldo gravado pela status line.
 - `scripts/statusline.py`: status line que mostra e grava o saldo; aceita `--encadear` para manter outra status line.
 - `scripts/calibrar.py`: mede custos reais no histórico (`--dias`, `--projeto`, `--salvar`).

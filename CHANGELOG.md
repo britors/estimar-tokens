@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 — 10/11/2026
+
+- Custo em US$: `references/precos.json` traz os preços por modelo, com os multiplicadores de cache; dá para sobrescrever em `~/.claude/estimar-tokens/precos.json`.
+- `scripts/estimar.py`: estimativa por etapa em tokens e US$, exportável em Markdown (`--md`).
+- `scripts/custo_real.py`: custo real de uma sessão, com subagentes, por modelo e período, exportável em Markdown (`--md`).
+- SKILL.md: aviso de custo em US$, custo de cache frio depois de pausas e seção de exportação.
+
 ## 1.1.0 — 09/11/2026
 
 - Saldo real: `scripts/statusline.py` mostra e grava o uso dos limites de 5 h e 7 dias e do contexto; `scripts/saldo.py` lê o último retrato.

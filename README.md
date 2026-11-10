@@ -93,6 +93,37 @@ Opções:
 
 Nada sai da sua máquina.
 
+### Custo em dólar e relatórios em Markdown
+
+**Estimativa de uma tarefa**, etapa por etapa, no formato `descrição|chamadas|tokens novos em mil`:
+
+```bash
+python3 .../scripts/estimar.py \
+  --etapa "Ler o código|4|8" --etapa "Corrigir e testar|8|15" --etapa "Commit e PR|3|3" \
+  --titulo "Corrigir bug #42" --md estimativa.md
+```
+
+| # | Etapa | Chamadas | Tokens novos | Tokens processados | Custo |
+| ---: | --- | ---: | ---: | ---: | ---: |
+| 1 | Ler o código | 4 | 8,0 mil | 865,4 mil | US$ 0,26 |
+| 2 | Corrigir e testar | 8 | 15,0 mil | 1.793,9 mil | US$ 0,53 |
+| 3 | Commit e PR | 3 | 3,0 mil | 715,1 mil | US$ 0,18 |
+| | **Total** | **15** | **26,0 mil** | **3.374,4 mil** | **US$ 0,97** |
+
+**Custo real** da sessão atual, com os subagentes:
+
+```bash
+python3 .../scripts/custo_real.py --ultimos-min 60 --md custo.md   # ou --desde "2026-11-10 09:00", --sessao <id>
+```
+
+O custo real separa entrada, escrita e leitura do cache e saída, por modelo.
+
+Os preços ficam em `references/precos.json`, que traz a tabela da API Anthropic com os multiplicadores de cache. Para usar outros valores, crie `~/.claude/estimar-tokens/precos.json` no mesmo formato.
+
+Para assinantes do Claude.ai, o valor em dólar é o **equivalente em API**, não uma cobrança: serve para comparar tarefas e entender o que pesa.
+
+Também dá para pedir direto ao Claude: "exporta a estimativa em MD" ou "quanto custou essa tarefa? salva em MD".
+
 ### Lembrete a cada pedido (opcional)
 
 O plugin traz um hook que lembra o Claude de estimar a cada pedido, com o saldo atual. Ele vem **desligado**: sem o arquivo de ativação, o hook não imprime nada nem gasta tokens.
@@ -128,6 +159,9 @@ skills/estimar-tokens/
     statusline.py        mostra e grava o saldo
     saldo.py             lê o último saldo
     calibrar.py          mede custos no histórico
+    estimar.py           etapas → tokens e US$ (--md)
+    custo_real.py        custo real da sessão (--md)
+  references/precos.json preços por modelo
 ```
 
 Requer Python 3.8 ou mais novo, só com a biblioteca padrão.
@@ -139,6 +173,7 @@ Requer Python 3.8 ou mais novo, só com a biblioteca padrão.
 - **Real balance:** the bundled status line script (`scripts/statusline.py`) shows and records the 5-hour and 7-day limit usage and context size that Claude Code sends to the status line. Use `--encadear '<cmd>'` to keep your current status line.
 - **Measured costs:** `scripts/calibrar.py --salvar` measures per-tool cost from your own `~/.claude/projects` transcripts. Everything stays local.
 - **Safe steps:** work is split into steps that end in a consistent state. Expensive steps need confirmation, and steps that don't fit the remaining quota aren't started.
+- **Cost in USD and Markdown export:** `scripts/estimar.py` (estimate per step) and `scripts/custo_real.py` (real cost of a session, including subagents) print tables in tokens and USD; `--md file.md` saves them.
 - **Optional reminder hook:** off by default. Turn it on with `touch ~/.claude/estimar-tokens/lembrete`.
 
 Install:

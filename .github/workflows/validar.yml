@@ -30,3 +30,13 @@ jobs:
         run: |
           npm install -g @anthropic-ai/claude-code
           claude plugin validate .
+      - name: Estimativa e custo real exportam Markdown
+        run: |
+          export HOME=$(mktemp -d)
+          S=skills/estimar-tokens/scripts
+          python3 $S/estimar.py --etapa "a|2|5" --contexto 100 --modelo claude-opus-5-5 --md /tmp/e.md
+          grep -q 'US\$ ' /tmp/e.md
+          mkdir -p $HOME/.claude/projects/p
+          echo '{"type":"assistant","timestamp":"2026-11-10T10:00:00Z","message":{"id":"m1","model":"claude-opus-5-5","usage":{"input_tokens":10,"cache_creation_input_tokens":1000,"cache_read_input_tokens":100000,"output_tokens":500,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":1000}}}}' > $HOME/.claude/projects/p/s1.jsonl
+          python3 $S/custo_real.py --sessao s1 --md /tmp/r.md
+          grep -q 'US\$ 0,04' /tmp/r.md
