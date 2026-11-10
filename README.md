@@ -193,6 +193,8 @@ Install:
 
 On older versions, run `/plugin marketplace add britors/estimar-tokens` and then `/plugin install estimar-tokens@estimar-tokens`.
 
+Usage: Claude loads the skill on its own before multi-step tasks. To call it directly, type `/estimar-tokens:estimar-tokens`.
+
 The skill text is in Brazilian Portuguese, and Claude follows it in any language.
 
 ## Licença / License
