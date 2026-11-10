@@ -8,12 +8,14 @@
 
 ## Português
 
-Plugin do [Claude Code](https://claude.com/claude-code) que estima quantos tokens cada etapa de uma tarefa vai gastar e compara com o **saldo real** dos seus limites de uso, **antes** de executar. Assim a sessão não para no meio de uma tarefa por limite.
+Plugin do [Claude Code](https://claude.com/claude-code) que estima quantos tokens e quantos **dólares** cada etapa de uma tarefa vai gastar, e compara com o **saldo real** dos seus limites de uso, **antes** de executar. Assim a sessão não para no meio de uma tarefa por limite.
 
 ### O que ele faz
 
 - **Lê o saldo real.** Mostra o percentual usado dos limites de 5 horas e de 7 dias e o tamanho do contexto, a partir dos dados que o Claude Code envia à status line.
-- **Estima cada etapa** pelo modelo `chamadas × contexto atual + acréscimos`, com custos **medidos no seu próprio histórico**.
+- **Estima cada etapa em tokens e em US$** pelo modelo `chamadas × contexto atual + acréscimos`, com custos **medidos no seu próprio histórico** e preços por modelo da API.
+- **Mostra o custo real** de uma sessão ou de um período (com os subagentes), por modelo, em tokens e US$.
+- **Exporta em Markdown** a estimativa e o custo real, para guardar, comparar ou anexar num PR.
 - **Quebra a tarefa em etapas seguras**, que terminam com algo concluído (commit, PR, pacote enviado), sem estado público pela metade.
 - **Decide pelo saldo:**
   - avisa o custo antes de cada etapa;
@@ -168,7 +170,7 @@ Requer Python 3.8 ou mais novo, só com a biblioteca padrão.
 
 ## English
 
-[Claude Code](https://claude.com/claude-code) plugin that estimates how many tokens each step of a task will use and checks it against your **real usage limits**, **before** running it, so a session doesn't stop halfway because of a usage limit.
+[Claude Code](https://claude.com/claude-code) plugin that estimates how many tokens — and how many dollars — each step of a task will use and checks it against your **real usage limits**, **before** running it, so a session doesn't stop halfway because of a usage limit.
 
 - **Real balance:** the bundled status line script (`scripts/statusline.py`) shows and records the 5-hour and 7-day limit usage and context size that Claude Code sends to the status line. Use `--encadear '<cmd>'` to keep your current status line.
 - **Measured costs:** `scripts/calibrar.py --salvar` measures per-tool cost from your own `~/.claude/projects` transcripts. Everything stays local.
