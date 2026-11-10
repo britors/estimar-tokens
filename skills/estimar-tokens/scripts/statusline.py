@@ -23,6 +23,16 @@ import time
 from pathlib import Path
 
 SALDO = Path.home() / ".claude" / "estimar-tokens" / "saldo.json"
+LARGURA_BARRA = 8
+OITAVOS = " ▏▎▍▌▋▊▉"
+
+
+def barra(pct):
+    """Barra horizontal de LARGURA_BARRA caracteres, com resolução de 1/8 de caractere."""
+    oitavos = round(max(0, min(100, pct)) / 100 * LARGURA_BARRA * 8)
+    cheios, resto = divmod(oitavos, 8)
+    texto = "█" * cheios + (OITAVOS[resto] if resto else "")
+    return texto + "░" * (LARGURA_BARRA - len(texto))
 
 
 def gravar(dados):
@@ -71,12 +81,12 @@ def main():
 
     rotulos = {"five_hour": "5h", "seven_day": "7d", "spend_limit": "gasto"}
     saldo = [
-        f"{rotulos.get(nome, nome)} {v['usado_pct']:.0f}%"
+        f"{rotulos.get(nome, nome)} {barra(v['usado_pct'])} {v['usado_pct']:.0f}%"
         for nome, v in retrato["limites"].items()
         if v.get("usado_pct") is not None
     ]
     if retrato["contexto_pct"] is not None:
-        saldo.append(f"ctx {retrato['contexto_pct']:.0f}%")
+        saldo.append(f"ctx {barra(retrato['contexto_pct'])} {retrato['contexto_pct']:.0f}%")
     if saldo:
         partes.append(" · ".join(saldo))
     print(" | ".join(partes))

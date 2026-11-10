@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 — 10/11/2026
+
+- Status line: os percentuais de 5 h, 7 dias e contexto aparecem como barras (`5h ███▍░░░░ 42%`).
+
 ## 1.2.0 — 10/11/2026
 
 - Custo em US$: `references/precos.json` traz os preços por modelo, com os multiplicadores de cache; dá para sobrescrever em `~/.claude/estimar-tokens/precos.json`.

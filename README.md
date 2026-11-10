@@ -76,7 +76,7 @@ Para manter a status line que você já usa, passe o comando dela em `--encadear
 "command": "python3 .../statusline.py --encadear 'bash ~/.claude/minha-statusline.sh'"
 ```
 
-A barra mostra algo como `minha linha | 5h 42% · 7d 71% · ctx 13%`, e o retrato vai para `~/.claude/estimar-tokens/saldo.json`.
+A barra mostra algo como `minha linha | 5h ███▍░░░░ 42% · 7d █████▋░░ 71% · ctx █░░░░░░░ 13%`, e o retrato vai para `~/.claude/estimar-tokens/saldo.json`.
 
 Os limites só aparecem para assinantes do Claude.ai, ou atrás de um gateway com limite de gasto. Pela API sem gateway, a status line mostra só o contexto.
 
