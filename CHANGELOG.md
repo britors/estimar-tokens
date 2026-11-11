@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.0 — 11/11/2026
+
+- Modo estimativa por sessão, ligado com `/estimar-tokens on` e desligado com `/estimar-tokens off` (`scripts/modo.py`). Ligado, todo pedido tem estimativa antes e relatório estimado x realizado no fim; o hook Stop cobra o relatório uma vez se ele faltar.
+- `/estimar-tokens:setup`: pergunta se as sessões novas começam com o modo estimativa ligado (`modo.py config on|off`, hook SessionStart).
+- `scripts/estimar.py --registrar <sessão>`: grava a estimativa do pedido.
+- `scripts/comparar.py`: tabela estimado x realizado (chamadas, tokens, US$) desde o início do pedido, com subagentes, exportável em Markdown.
+- O hook de lembrete (`hooks/lembrete.py`) foi substituído pelo modo estimativa; quem tinha o arquivo antigo `~/.claude/estimar-tokens/lembrete` começa as sessões novas com o modo ligado, até rodar o setup.
+
 ## 1.3.0 — 10/11/2026
 
 - Status line: os percentuais de 5 h, 7 dias e contexto aparecem como barras (`5h ███▍░░░░ 42%`).

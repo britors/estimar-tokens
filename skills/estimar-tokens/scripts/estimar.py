@@ -42,6 +42,7 @@ def main():
     ap.add_argument("--modelo", help="ID do modelo (padrão: o da sessão atual)")
     ap.add_argument("--titulo", default="Estimativa", help="título do relatório")
     ap.add_argument("--md", help="grava a estimativa neste arquivo Markdown")
+    ap.add_argument("--registrar", metavar="SESSAO", help="grava o total como estimativa do pedido atual (modo estimativa)")
     a = ap.parse_args()
 
     itens = list(a.etapa)
@@ -96,6 +97,13 @@ def main():
     if a.md:
         Path(a.md).write_text(texto, encoding="utf-8")
         print(f"Gravado em {a.md}")
+    if a.registrar:
+        import modo
+
+        pedido = modo.ler_pedido(a.registrar) or {"inicio": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime())}
+        pedido["estimativa"] = {"titulo": a.titulo, "chamadas": tot_ch, "tokens": tot_proc, "usd": tot_usd}
+        modo.gravar_pedido(a.registrar, pedido)
+        print("Estimativa registrada para o relatório estimado x realizado (comparar.py).")
 
 
 if __name__ == "__main__":
