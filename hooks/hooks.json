@@ -1,12 +1,34 @@
 {
-  "description": "Lembrete opcional de estimar tokens a cada pedido. Desligado até existir ~/.claude/estimar-tokens/lembrete.",
+  "description": "Modo estimativa por sessão, ligado e desligado com /estimar-tokens on e /estimar-tokens off; /estimar-tokens:setup define se as sessões novas começam com ele ligado. Ligado, pede a estimativa antes de cada pedido e cobra o relatório estimado x realizado no fim. Desligado, não imprime nada.",
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/estimar-tokens/scripts/modo.py\" hook-inicio",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/lembrete.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/estimar-tokens/scripts/modo.py\" hook-pedido",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/estimar-tokens/scripts/modo.py\" hook-parar",
             "timeout": 5
           }
         ]

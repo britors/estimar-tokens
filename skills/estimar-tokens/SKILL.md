@@ -9,6 +9,19 @@ Objetivo: a sessão não pode parar no meio de uma tarefa por limite de uso. Ant
 
 Os scripts citados ficam na pasta `scripts/`, ao lado deste SKILL.md. Use o caminho absoluto deles.
 
+## Modo estimativa: `/estimar-tokens on` e `/estimar-tokens off`
+
+Se a skill foi chamada com `on` ou `off`, o usuário está ligando ou desligando o **modo estimativa**. O hook já aplicou a troca e informou o ID da sessão: rode `python3 <pasta desta skill>/scripts/modo.py status --sessao <sessão>` e diga ao usuário em que estado ficou. Se não tiver pegado, rode `modo.py on --sessao <sessão>` ou `modo.py off --sessao <sessão>`. Não estime esse pedido.
+
+O modo vale para a sessão atual. Se o usuário quiser que as sessões novas já comecem com ele ligado, indique `/estimar-tokens:setup`. Com o modo ligado, **todo** pedido segue esta skill, mesmo os pequenos:
+
+1. **Antes de agir:** estime o pedido e registre a estimativa, com o ID da sessão que o hook informa:
+   `python3 <pasta desta skill>/scripts/estimar.py --registrar <sessão> --titulo "<pedido>" --etapa "..."`.
+   Avise o custo numa linha e siga a tabela da seção 4.
+2. **Ao terminar:** rode `python3 <pasta desta skill>/scripts/comparar.py --sessao <sessão>` e mostre a tabela estimado x realizado. Se o realizado passou de 1,5× o estimado, diga numa linha o que custou mais que o previsto.
+
+Se você esquecer o relatório, o hook Stop pede uma vez antes de encerrar.
+
 ## 1. Ler o saldo
 
 Rode `python3 <pasta desta skill>/scripts/saldo.py`.
@@ -86,7 +99,9 @@ Os valores em US$ seguem o preço da API (`references/precos.json`). Para assina
 
 ## Recursos
 
-- `scripts/estimar.py`: etapas → tokens e US$ (`--md` exporta).
+- `scripts/modo.py`: liga, desliga e mostra o modo estimativa da sessão (`on`, `off`, `status`), configura as sessões novas (`config on|off`) e é o hook.
+- `scripts/estimar.py`: etapas → tokens e US$ (`--md` exporta, `--registrar` grava para o relatório).
+- `scripts/comparar.py`: estimado x realizado do pedido atual (`--md` exporta).
 - `scripts/custo_real.py`: custo real de uma sessão, com subagentes (`--md` exporta).
 - `references/precos.json`: preços por modelo; sobrescreva em `~/.claude/estimar-tokens/precos.json`.
 - `scripts/saldo.py`: último saldo gravado pela status line.

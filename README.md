@@ -133,15 +133,25 @@ Para assinantes do Claude.ai, o valor em dólar é o **equivalente em API**, nã
 
 Também dá para pedir direto ao Claude: "exporta a estimativa em MD" ou "quanto custou essa tarefa? salva em MD".
 
-### Lembrete a cada pedido (opcional)
+### Modo estimativa: `/estimar-tokens on` e `off`
 
-O plugin traz um hook que lembra o Claude de estimar a cada pedido, com o saldo atual. Ele vem **desligado**: sem o arquivo de ativação, o hook não imprime nada nem gasta tokens.
+Com o modo ligado, **todo** pedido tem estimativa antes de começar e, no fim, um relatório estimado x realizado:
 
-```bash
-mkdir -p ~/.claude/estimar-tokens
-touch ~/.claude/estimar-tokens/lembrete   # liga (cerca de 60 tokens por pedido)
-rm ~/.claude/estimar-tokens/lembrete      # desliga
 ```
+| | Estimado | Realizado | Diferença |
+| --- | ---: | ---: | ---: |
+| Chamadas | 12 | 15 | +3 (+25%) |
+| Tokens processados | 820,0 mil | 1.010,4 mil | +190,4 mil (+23%) |
+| Custo | US$ 0,62 | US$ 0,71 | +US$ 0,09 (+15%) |
+```
+
+- **Ligar na sessão atual:** `/estimar-tokens on` (instalada como plugin, também `/estimar-tokens:estimar-tokens on`).
+- **Desligar na sessão atual:** `/estimar-tokens off`.
+- **Ligar em toda sessão nova:** `/estimar-tokens:setup` pergunta se o plugin inicia automaticamente. Se sim, toda sessão nova começa com o modo ligado. Também aceita a resposta direto: `/estimar-tokens:setup on` ou `off`.
+
+O modo vale por sessão e vem **desligado**: assim, os hooks não imprimem nada nem gastam tokens. Ligado, custa cerca de 120 tokens por pedido, mais a estimativa e o relatório. Se o Claude esquecer o relatório, o hook Stop pede uma vez antes de encerrar.
+
+Por trás: `scripts/modo.py` liga e desliga o modo, `estimar.py --registrar` grava a estimativa do pedido e `scripts/comparar.py` monta o relatório, com subagentes (`--md` exporta).
 
 ### Uso
 
@@ -160,7 +170,7 @@ Antes de cada operação, siga a skill `estimar-tokens`.
 
 ```
 .claude-plugin/          marketplace.json, plugin.json, ícone
-hooks/                   lembrete opcional (UserPromptSubmit)
+hooks/                   modo estimativa (SessionStart, UserPromptSubmit e Stop)
 skills/estimar-tokens/
   SKILL.md               passos: saldo → tabela → estimativa → decisão
   references/custos.md   tabela padrão
@@ -170,6 +180,9 @@ skills/estimar-tokens/
     calibrar.py          mede custos no histórico
     estimar.py           etapas → tokens e US$ (--md)
     custo_real.py        custo real da sessão (--md)
+    comparar.py          estimado x realizado do pedido (--md)
+    modo.py              liga e desliga o modo estimativa; config; hooks
+skills/setup/SKILL.md    /estimar-tokens:setup: modo nas sessões novas
   references/precos.json preços por modelo
 ```
 
@@ -183,7 +196,7 @@ Requer Python 3.8 ou mais novo, só com a biblioteca padrão.
 - **Measured costs:** `scripts/calibrar.py --salvar` measures per-tool cost from your own `~/.claude/projects` transcripts. Everything stays local.
 - **Safe steps:** work is split into steps that end in a consistent state. Expensive steps need confirmation, and steps that don't fit the remaining quota aren't started.
 - **Cost in USD and Markdown export:** `scripts/estimar.py` (estimate per step) and `scripts/custo_real.py` (real cost of a session, including subagents) print tables in tokens and USD; `--md file.md` saves them.
-- **Optional reminder hook:** off by default. Turn it on with `touch ~/.claude/estimar-tokens/lembrete`.
+- **Estimate mode:** `/estimar-tokens on` makes every request start with an estimate and end with an estimated vs. actual report (`scripts/comparar.py`). `/estimar-tokens off` turns it off for the current session. `/estimar-tokens:setup` asks whether new sessions start with it on. Off by default.
 
 Install:
 
